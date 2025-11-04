@@ -13,7 +13,7 @@ import numpy as np
 def spare_matrix_Abt(m: int, n: int) -> tuple[np.ndarray, np.ndarray] | None:
     """Funkcja tworząca zestaw składający się z macierzy A (m,n) i
     wektora b (m,) na podstawie pomocniczego wektora t (m,).
-
+SSS
     Args:
         m (int): Liczba wierszy macierzy A.
         n (int): Liczba kolumn macierzy A.
@@ -24,7 +24,7 @@ def spare_matrix_Abt(m: int, n: int) -> tuple[np.ndarray, np.ndarray] | None:
             - Wektor b (m,).
         Jeżeli dane wejściowe są niepoprawne funkcja zwraca `None`.
     """
-    if m <= 0 or n <= 0 or not isinstance(m, int) or not isinstance(n, int):
+    if not isinstance(m, int) or not isinstance(n, int) or m <= 0 or n <= 0:
         return None
     t = np.linspace(0, 1, m)
     A = np.vander(t, n, increasing=True)
@@ -53,6 +53,17 @@ def square_from_rectan(
     """
     if A is None or b is None:
         return None
+    
+    if not isinstance(A, np.ndarray) or not isinstance(b, np.ndarray):
+        return None
+    
+    if A.ndim != 2 or b.ndim != 1:
+        return None
+    
+    m = A.shape[0]
+    if b.shape[0] != m:
+        return None
+    
     A_new = A.T @ A
     b_new = A.T @ b
     return (A_new, b_new)
@@ -72,8 +83,16 @@ def residual_norm(A: np.ndarray, x: np.ndarray, b: np.ndarray) -> float | None:
         (float): Wartość normy residuum dla podanych parametrów.
         Jeżeli dane wejściowe są niepoprawne funkcja zwraca `None`.
     """
-    if A is None or x is None or b is None:
+    if not isinstance(A, np.ndarray) or not isinstance(x, np.ndarray) or not isinstance(b, np.ndarray) or A is None or x is None or b is None:
         return None
+    
+    if A.ndim != 2 or x.ndim != 1 or b.ndim != 1:
+        return None
+    
+    m, n = A.shape
+    if b.shape[0] != m or x.shape[0] != n:
+        return None
+    
     r = b - A @ x
     return np.linalg.norm(r)
     pass
